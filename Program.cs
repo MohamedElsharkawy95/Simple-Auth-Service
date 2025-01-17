@@ -4,8 +4,10 @@ using AuthAPI.Filters;
 using AuthAPI.Interfaces.Configurations;
 using AuthAPI.Interfaces.Services;
 using AuthAPI.Models;
+using AuthAPI.Repositories;
 using AuthAPI.Services;
 using AuthAPI.Utilities.Configurations;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -13,6 +15,17 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy", builder =>
+    {
+        builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("http://localhost:3002");
+    });
+});
 
 ConfigureConfigurations(builder.Services);
 
@@ -50,6 +63,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("CORSPolicy");
+
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -77,9 +92,12 @@ void ApplyMigrations()
 
 void ConfigureServices(IServiceCollection services)
 {
+    builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
     services.AddScoped<IAuthService, AuthService>();
     services.AddScoped<IJwtService, JwtService>();
     services.AddScoped<IJwtConfig, JwtConfigs>();
+
+    builder.Services.AddMediatR(typeof(Program));
 }
 
 void ConfigureConfigurations(IServiceCollection services)

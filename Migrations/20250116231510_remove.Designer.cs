@@ -4,6 +4,7 @@ using AuthAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250116231510_remove")]
+    partial class remove
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,110 +24,6 @@ namespace AuthAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("AuthAPI.Models.Activity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("ActivityType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("AttendanceStatus")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("ClassId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Grade")
-                        .HasColumnType("float");
-
-                    b.Property<int>("StudentClassId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassId");
-
-                    b.HasIndex("StudentClassId");
-
-                    b.ToTable("Activities");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.Class", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Classes");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.HomeworkFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("HomeworkFiles");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.StudentClass", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClassId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassId");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("StudentClasses");
-                });
 
             modelBuilder.Entity("AuthAPI.Models.User", b =>
                 {
@@ -350,45 +249,6 @@ namespace AuthAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AuthAPI.Models.Activity", b =>
-                {
-                    b.HasOne("AuthAPI.Models.Class", null)
-                        .WithMany("Activities")
-                        .HasForeignKey("ClassId");
-
-                    b.HasOne("AuthAPI.Models.StudentClass", "StudentClass")
-                        .WithMany("Activities")
-                        .HasForeignKey("StudentClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StudentClass");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.HomeworkFile", b =>
-                {
-                    b.HasOne("AuthAPI.Models.Activity", null)
-                        .WithMany("HomeworkFiles")
-                        .HasForeignKey("ActivityId");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.StudentClass", b =>
-                {
-                    b.HasOne("AuthAPI.Models.Class", "Class")
-                        .WithMany()
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AuthAPI.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("Class");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AuthAPI.Models.User", b =>
                 {
                     b.HasOne("AuthAPI.Models.UserType", "UserType")
@@ -447,21 +307,6 @@ namespace AuthAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.Activity", b =>
-                {
-                    b.Navigation("HomeworkFiles");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.Class", b =>
-                {
-                    b.Navigation("Activities");
-                });
-
-            modelBuilder.Entity("AuthAPI.Models.StudentClass", b =>
-                {
-                    b.Navigation("Activities");
                 });
 #pragma warning restore 612, 618
         }

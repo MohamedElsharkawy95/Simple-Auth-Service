@@ -16,4 +16,7 @@ public class RegisterUserRequest
 
     [Required]
     public required string Phone { get; set; }
+
+    [Required]
+    public required int UserTypeId { get; set; }
 }
